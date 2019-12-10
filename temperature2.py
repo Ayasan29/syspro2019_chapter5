@@ -72,7 +72,7 @@ def readData():
 	global id
 	now = datetime.datetime.now()
 	print(now)
-		output["id"+str(id)] = cl.OrderedDict({"time" : now.isoformat(), "temp" : compensate_T(temp_raw), "pres" : compensate_P(pres_raw), "hum" : compensate_H(hum_raw)},)
+		output["id"+str(id)] = cl.OrderedDict({"time" : now.isoformat(), "temp" : compensate_T(temp_raw), "pres" : compensate_P(pres_raw), "hum" : compensate_H(hum_raw)})
 	
 	id += 1
 
