@@ -69,10 +69,14 @@ def readData():
 	temp_raw = (data[3] << 12) | (data[4] << 4) | (data[5] >> 4)
 	hum_raw  = (data[6] << 8)  |  data[7]
 	
+	temp = compensate_T(temp_raw)
+	pres = compensate_P(pres_raw)
+	hum  = compensate_H(hum_raw)
+	
 	global id
 	now = datetime.datetime.now()
 	print(now)
-		output["id"+str(id)] = cl.OrderedDict({"time" : now.isoformat(), "temp" : compensate_T(temp_raw), "pres" : compensate_P(pres_raw), "hum" : compensate_H(hum_raw)})
+		output["id"+str(id)] = cl.OrderedDict({"time" : now.isoformat(), "temp" : temp, "pres" : pres, "hum" : hum})
 	
 	id += 1
 
