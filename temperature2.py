@@ -69,15 +69,16 @@ def readData():
 	temp_raw = (data[3] << 12) | (data[4] << 4) | (data[5] >> 4)
 	hum_raw  = (data[6] << 8)  |  data[7]
 	
-	temp = compensate_T(temp_raw)
-	pres = compensate_P(pres_raw)
-	hum  = compensate_H(hum_raw)
-	
 	global id
 	now = datetime.datetime.now()
 	print(now)
-		output["id"+str(id)] = cl.OrderedDict({"time" : now.isoformat(), "temp" : temp, "pres" : pres, "hum" : hum})
+		output["id"+str(id)] = cl.OrderedDict({"time" : now.isoformat(), "temp" : 0.0, "pres" : 0.0, "hum" : 0.0})
 	
+	compensate_T(temp_raw)
+	compensate_P(pres_raw)
+	compensate_H(hum_raw)
+	
+
 	id += 1
 
 def compensate_P(adc_P):
@@ -103,7 +104,7 @@ def compensate_P(adc_P):
 	pressure = pressure + ((v1 + v2 + digP[6]) / 16.0)  
 
 	print "pressure : %7.2f hPa" % (pressure/100)
-	return (pressure/100)
+	output["id"+str(id)]["pres"] = (pressure/100)
 	
 
 def compensate_T(adc_T):
@@ -112,8 +113,9 @@ def compensate_T(adc_T):
 	v2 = (adc_T / 131072.0 - digT[0] / 8192.0) * (adc_T / 131072.0 - digT[0] / 8192.0) * digT[2]
 	t_fine = v1 + v2
 	temperature = t_fine / 5120.0
+	
 	print "temp : %-6.2f ℃" % (temperature)
-	return (temperature)
+	output["id"+str(id)]["temp"] = (temperature)
 
 def compensate_H(adc_H):
 	global t_fine
@@ -127,9 +129,9 @@ def compensate_H(adc_H):
 		var_h = 100.0
 	elif var_h < 0.0:
 		var_h = 0.0
-	print "hum : %6.2f ％" % (var_h)
 	
-	return (var_h)
+	print "hum : %6.2f ％" % (var_h)
+	output["id"+str(out_id)]["hum"] = (var_h)
 
 
 def setup():
